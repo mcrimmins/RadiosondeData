@@ -7,7 +7,7 @@ library(reshape2)
 library(ggplot2)
 
 # loop through days
-dateRange<-format(seq(as.Date("2017/6/1"), as.Date("2017/8/16"), by = "day"), format="%Y%m%d")
+dateRange<-format(seq(as.Date("2017/6/1"), as.Date("2017/9/20"), by = "day"), format="%Y%m%d")
 
 for (k in 1:length(dateRange)) {
     
@@ -56,10 +56,10 @@ meltData$date<-as.Date(meltData$date, format="%Y%m%d")
 
 ggplot(meltData, aes(date, value, color=variable)) + 
 geom_line()+
-  ylim(0,100)+
+  ylim(0,360)+
   theme_bw()+
   ylab("knots")+
-  ggtitle("2017 00Z KTUS Soundings - Wind speed at mandatory levels")
+  ggtitle("2017 00Z KTUS Soundings - Wind dir at mandatory levels")
 
 ggplot(meltData, aes(date, value)) + 
   geom_line()+
