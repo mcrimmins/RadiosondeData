@@ -7,7 +7,7 @@ library(reshape2)
 library(ggplot2)
 
 # loop through days
-dateRange<-format(seq(as.Date("2017/6/1"), as.Date("2017/9/20"), by = "day"), format="%Y%m%d")
+dateRange<-format(seq(as.Date("2018/06/01"), as.Date("2018/09/30"), by = "day"), format="%Y%m%d")
 
 for (k in 1:length(dateRange)) {
     
