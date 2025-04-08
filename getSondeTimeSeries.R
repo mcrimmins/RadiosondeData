@@ -7,7 +7,7 @@ library(data.table)
 library(tidyr)
 
 # set End Date
-endDate<-"07/02/2019"
+endDate<-"08/03/2020"
 
 # get KTUS
 sondeData<-fread(paste0('https://mesonet.agron.iastate.edu/cgi-bin/request/raob.py?station=KTUS&sts=01/01/1957+00:00&ets=',endDate,'+12:00'))
@@ -38,7 +38,7 @@ sondeData$year<- as.integer(strftime(sondeData$dateTime, format="%Y"))
 sondeData$dpd<-sondeData$tmpc-sondeData$dwpc
 
 # month of interest
-mo=6
+mo=7
 
 # subset data by time and month
 subsetData<- sondeData[ which(sondeData$hour==12 & sondeData$month == mo),]

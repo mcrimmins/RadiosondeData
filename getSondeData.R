@@ -7,12 +7,14 @@ library(reshape2)
 library(ggplot2)
 
 # loop through days
-dateRange<-format(seq(as.Date("2018/06/01"), as.Date("2018/09/30"), by = "day"), format="%Y%m%d")
+dateRange<-format(seq(as.Date("2022/06/15"), as.Date("2022/08/10"), by = "day"), format="%Y%m%d")
 
 for (k in 1:length(dateRange)) {
     
   raw_data <- getURL(paste0('https://mesonet.agron.iastate.edu/json/raob.py?ts=',dateRange[k],'0000&station=KTUS'))
 
+  if(nchar(raw_data)>100){
+  
     data <- fromJSON(raw_data)
 
       # find length of list
@@ -34,7 +36,7 @@ for (k in 1:length(dateRange)) {
       sondeDay$vars<-rownames(sondeDay)
       sondeDay$date<-dateRange[k]
       # keep only certain cols
-      keyLevels <- c("850", "700", "500","400","300","250","200","vars","date")
+      keyLevels <- c("700", "500","400","300","vars","date") # removed 250, 200, 850
       sondeDay <- sondeDay[keyLevels]
       # drop first column, varying name
       #sondeDay[,1:2] <- NULL
@@ -45,7 +47,8 @@ for (k in 1:length(dateRange)) {
       }else{
         DFbind <- rbind(DFbind, sondeDay) # brick or stack?
       }
-      print(dateRange[k])
+      print(dateRange[k])}
+  else{}
 }
       
 # select var to plot
@@ -53,6 +56,13 @@ subData <- DFbind[ which(DFbind$vars=="drct"),]
 #subData <- subData[,c("500","vars","date")]
 meltData<-melt(subData)
 meltData$date<-as.Date(meltData$date, format="%Y%m%d")
+
+ggplot(subset(meltData,variable %in% c("500" , "300")), aes(date, value, color=variable)) + 
+  geom_line()+
+  #ylim(0,360)+
+  theme_bw()+
+  ylab("Wind Dir (deg)")+
+  ggtitle("2022 00Z KTUS Soundings - Wind Direction (deg) at mandatory levels")
 
 ggplot(meltData, aes(date, value, color=variable)) + 
 geom_line()+
@@ -67,3 +77,14 @@ ggplot(meltData, aes(date, value)) +
   theme_bw()+
   ylab("Degrees")+
   ggtitle("2017 00Z KTUS Soundings - Wind dir at mandatory levels")
+
+#####
+# facet all variables
+meltData<-melt(DFbind)
+meltData$date<-as.Date(meltData$date, format="%Y%m%d")
+
+ggplot(meltData, aes(date, value, color=variable)) + 
+  geom_line()+
+  facet_wrap(~vars, scales="free")+
+  theme_bw()
+
